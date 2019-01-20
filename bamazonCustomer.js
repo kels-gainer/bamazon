@@ -20,13 +20,17 @@ function start() {
         if (err) throw err;
         console.log("Welcome to Bamazon! Here are a list of items for purchase?");
 
+        var tableArray = [];
+
         for(var i = 0; i < results.length; i++) {
-            results.push(
+            tableArray.push(
             "Item ID: " + results[i].item_id+ "\n----------\n",
             "Product: " + results[i].product_name + "\n----------\n",
             "Department: " + results[i].department_name+ "\n----------\n",
             "Price: " + results[i].price)
         }
+        console.log(tableArray);
+        
     });
 
     // Prompt the user to start by display two prompts: asking which ID & quantity
