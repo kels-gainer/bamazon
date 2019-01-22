@@ -103,3 +103,8 @@ function start() {
     };
 }
 
+app.listen(PORT, function() {
+    console.log("Port working: " + PORT);
+    
+});
+
