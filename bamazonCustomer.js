@@ -1,9 +1,13 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
+var express = require("express");
+var app = express();
+
+var PORT = process.env.PORT || 8080;
 
 var connection = mysql.createConnection({
     host: "localhost",
-    PORT: 3307,
+    port: 3307,
     user: "root",
     password: "root",
     database: "bamazon_db"
@@ -16,7 +20,7 @@ connection.connect(function(err) {
 
 // going through the database to show items
 function start() {
-    connect.query("SELECT * FROM products", function(err, results) {
+    connection.query("SELECT * FROM products", function(err, results) {
         if (err) throw err;
         console.log("Welcome to Bamazon! Here are a list of items for purchase?");
 
@@ -24,9 +28,9 @@ function start() {
 
         for(var i = 0; i < results.length; i++) {
             tableArray.push(
-            "Item ID: " + results[i].item_id+ "\n----------\n",
-            "Product: " + results[i].product_name + "\n----------\n",
-            "Department: " + results[i].department_name+ "\n----------\n",
+            "Item ID: " + results[i].item_id,
+            "Product: " + results[i].product_name,
+            "Department: " + results[i].department_name,
             "Price: " + results[i].price)
         }
         console.log(tableArray);
@@ -62,14 +66,18 @@ function start() {
     
     // check and see if you have enough items
         connection.query(
-            "SELECT products WHERE ?", [answer.itemChoice], function(error, result) {
-                if(error) throw err;
+            "SELECT product_name, stock_quantity, price FROM products WHERE item_id = ?", [parseInt(answer.itemChoice)], function(error, result) {
+                if(error) throw error;
+                console.log(result[0].stock_quantity);
                 
-                if (parseInt(result.stock_quanity) >= parseInt(answer.itemCount)) {
-                    "UPDATE products SET ? WHERE ?", (parseInt(result.stock_quanity) - parseInt(answer.itemCount));
-                    // Show Price of order (resutls.price * answer.ItemCount)
-                    console.log("Price: " + results.price);
-                    
+                if (parseInt(result[0].stock_quantity) >= parseInt(answer.itemCount)) {
+                    // Show Price of order
+                    console.log("Your total is: $" + result[0].price * answer.itemCount);
+                    // update the datebase (Subtract itemCount) new function with new db query
+                    "UPDATE products SET stock_quantity = ? WHERE item_id = ?";
+
+                    continueShopping();
+
 
                 } else {
                     console.log("Not Enough In Stock");
@@ -104,7 +112,6 @@ function start() {
 }
 
 app.listen(PORT, function() {
-    console.log("Port working: " + PORT);
-    
+    console.log("Port working: " + PORT); 
 });
 
