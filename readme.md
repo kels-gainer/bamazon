@@ -18,7 +18,7 @@ Prompting the user if there is not enough items in stock
 
 Once the customer has chosen an item and there is enough in stock then the prompt can diplay the cost and will update the database
 
-![alt text](images/purchse.jpg)
+![alt text](images/purchase.jpg)
 
 Stack Used:
 
